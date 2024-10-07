@@ -13,7 +13,7 @@ jobs:
     steps:
       # 1. GitHub에서 코드 체크아웃
       - name: Checkout code
-        uses: appleboy/ssh-action@master
+        uses: actions/checkout@v3
 
       # 2. EC2 인스턴스에 SSH로 접속하여 작업 실행
       - name: SSH and deploy to EC2
