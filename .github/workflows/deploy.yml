@@ -24,7 +24,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/sypg/springboot-kotlin   # 프로젝트 디렉터리로 이동
-            git pull origin main                     # 최신 코드 가져오기
+            git pull origin master                     # 최신 코드 가져오기
             ./gradlew build                          # 프로젝트 빌드
             docker build -t springboot-kotlin .      # Docker 이미지 빌드
             docker stop springboot-app || true       # 기존 컨테이너 중지
