@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. EC2 인스턴스에 SSH로 접속하여 Docker 설치 확인 및 설정
+      # 1. EC2 인스턴스에 SSH로 접속하여 Docker 설치 확인
       - name: SSH and setup on EC2
         uses: appleboy/ssh-action@master
         with:
@@ -25,7 +25,7 @@ jobs:
 
       # 2. GitHub Release에서 JAR 파일 다운로드
       - name: Download Release Asset
-        uses: actions/download-release-asset@v1
+        uses: softprops/action-gh-release@v1
         with:
           tag: ${{ github.event.release.tag_name }}  # 릴리스 태그
           asset_name: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 다운로드할 JAR 파일 이름
