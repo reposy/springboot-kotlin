@@ -25,7 +25,7 @@ jobs:
           script: |
             cd /home/ubuntu/sypg/springboot-kotlin   # 프로젝트 디렉터리로 이동
             git pull origin master                   # 최신 코드 가져오기
-            docker build -t springboot-kotlin .      # Docker 이미지 빌드
-            docker stop springboot-app || true       # 기존 컨테이너 중지
-            docker rm springboot-app || true         # 기존 컨테이너 제거
-            docker run -d -p 8080:8080 --name springboot-app springboot-kotlin  # 컨테이너 실행
+            sudo docker build -t springboot-kotlin .      # Docker 이미지 빌드
+            sudo docker stop springboot-app || true       # 기존 컨테이너 중지
+            sudo docker rm springboot-app || true         # 기존 컨테이너 제거
+            sudo docker run -d -p 8080:8080 --name springboot-app springboot-kotlin  # 컨테이너 실행
