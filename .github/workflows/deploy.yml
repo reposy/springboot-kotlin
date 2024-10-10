@@ -7,6 +7,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      ACTIONS_STEP_DEBUG: true
+
     steps:
       # 1. 최신 릴리스에서 JAR 파일 다운로드
       - name: Get Latest Release
@@ -24,7 +27,6 @@ jobs:
           tag_name: ${{ env.tag }}  # 자동으로 가져온 최신 태그
           files: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 다운로드할 JAR 파일 이름
         env:
-          ACTIONS_STEP_DEBUG: true
           GITHUB_TOKEN: ${{ secrets.TOKEN_ACTIONS }}  # Personal Access Token 사용
 
       # 3. JAR 파일을 EC2로 업로드
