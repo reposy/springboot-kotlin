@@ -1,21 +1,18 @@
-name: Deploy to EC2 from GitHub Release
+name: Deploy to EC2 from Latest GitHub Release
 
 on:
-  release:
-    types: [published]  # 릴리스가 게시될 때 트리거
-  workflow_dispatch: # 수동 실행을 허용하는 이벤트
+  workflow_dispatch:  # 수동 실행을 허용하는 이벤트
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-
-      # 1. GitHub Release에서 JAR 파일 다운로드
-      - name: Download Release Asset
+      # 1. 최신 릴리스에서 JAR 파일 다운로드
+      - name: Download Latest Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.event.release.tag_name }}  # 릴리스 태그
+          tag_name: ${{ github.ref }}  # 최신 태그를 사용
           files: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 다운로드할 JAR 파일 이름
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰
