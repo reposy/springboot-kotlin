@@ -3,24 +3,30 @@ name: Deploy to EC2 from Latest GitHub Release
 on:
   workflow_dispatch:  # 수동 실행을 허용하는 이벤트
 
-permissions:
-  contents: write  # 레포지토리의 내용에 대한 쓰기 권한 설정
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 최신 릴리스에서 JAR 파일 다운로드
+      # 1. 최신 릴리스를 가져오기 위한 API 호출
+      - name: Get Latest Release
+        id: get_release
+        run: |
+          latest_release=$(curl -s https://api.github.com/repos/reposy/springboot-kotlin/releases/latest)
+          tag_name=$(echo $latest_release | jq -r .tag_name)
+          echo "Latest tag name is $tag_name"
+          echo "::set-output name=tag::$tag_name"
+
+      # 2. 최신 릴리스에서 JAR 파일 다운로드
       - name: Download Latest Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}  # 최신 태그를 사용
+          tag_name: ${{ steps.get_release.outputs.tag }}  # 최신 태그 사용
           files: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 다운로드할 JAR 파일 이름
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰
 
-      # 2. JAR 파일을 EC2로 업로드
+      # 3. JAR 파일을 EC2로 업로드
       - name: Upload JAR to EC2
         uses: appleboy/scp-action@master
         with:
@@ -30,7 +36,7 @@ jobs:
           source: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 실제 JAR 파일 이름
           target: /home/ubuntu/sypg/app.jar  # EC2의 지정된 경로에 저장
 
-      # 3. EC2에서 Docker 컨테이너 실행
+      # 4. EC2에서 Docker 컨테이너 실행
       - name: Run Docker Container on EC2
         uses: appleboy/ssh-action@master
         with:
