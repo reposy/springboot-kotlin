@@ -10,7 +10,7 @@ jobs:
     steps:
       # 1. 최신 릴리스에서 JAR 파일 다운로드
       - name: Download Latest Release Asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v0.1.7
         with:
           tag_name: ${{ github.ref }}  # 최신 태그를 사용
           files: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 다운로드할 JAR 파일 이름
