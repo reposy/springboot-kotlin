@@ -8,23 +8,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 최신 릴리스를 가져오기 위한 API 호출
+      # 1. 최신 릴리스에서 JAR 파일 다운로드
       - name: Get Latest Release
         id: get_release
         run: |
           latest_release=$(curl -s https://api.github.com/repos/reposy/springboot-kotlin/releases/latest)
           tag_name=$(echo $latest_release | jq -r .tag_name)
           echo "Latest tag name is $tag_name"
-          echo "::set-output name=tag::$tag_name"
+          echo "tag=$tag_name" >> $GITHUB_ENV  # 새로운 방식으로 환경 변수 설정
 
       # 2. 최신 릴리스에서 JAR 파일 다운로드
       - name: Download Latest Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.get_release.outputs.tag }}  # 최신 태그 사용
+          tag_name: ${{ env.tag }}  # 자동으로 가져온 최신 태그
           files: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 다운로드할 JAR 파일 이름
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰
+          GITHUB_TOKEN: ${{ secrets.TOKEN_ACTIONS }}  # Personal Access Token 사용
 
       # 3. JAR 파일을 EC2로 업로드
       - name: Upload JAR to EC2
