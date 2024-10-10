@@ -9,21 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. EC2 인스턴스에 SSH로 접속하여 Docker 설치 확인
-      - name: SSH and setup on EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # Docker가 설치되어 있는지 확인
-            sudo -v  # sudo 권한 확인
-            sudo docker --version || (echo "Docker is not installed." && exit 1)
-            # Docker 서비스 시작
-            sudo systemctl start docker || (echo "Failed to start Docker service." && exit 1)
 
-      # 2. GitHub Release에서 JAR 파일 다운로드
+      # 1. GitHub Release에서 JAR 파일 다운로드
       - name: Download Release Asset
         uses: softprops/action-gh-release@v1
         with:
@@ -32,7 +19,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰
 
-      # 3. JAR 파일을 EC2로 업로드
+      # 2. JAR 파일을 EC2로 업로드
       - name: Upload JAR to EC2
         uses: appleboy/scp-action@master
         with:
@@ -42,7 +29,7 @@ jobs:
           source: springboot-kotlin-0.0.1-SNAPSHOT.jar  # 실제 JAR 파일 이름
           target: /home/ubuntu/sypg/app.jar  # EC2의 지정된 경로에 저장
 
-      # 4. EC2에서 Docker 컨테이너 실행
+      # 3. EC2에서 Docker 컨테이너 실행
       - name: Run Docker Container on EC2
         uses: appleboy/ssh-action@master
         with:
