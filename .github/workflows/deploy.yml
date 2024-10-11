@@ -13,42 +13,29 @@ jobs:
       ACTIONS_STEP_DEBUG: true
 
     steps:
-      # 0. 최신 릴리스에서 파일 목록을 확인
-      - name: List Release Files
+      # 1. 최신 릴리스에서 파일 목록을 확인하고 첫 번째 자산을 다운로드
+      - name: Get Latest Release Asset
+        id: get_asset
         run: |
           latest_release=$(curl -s https://api.github.com/repos/reposy/springboot-kotlin/releases/latest)
-          echo "Release assets:"
-          echo $latest_release | jq '.assets[].name'
+          asset_url=$(echo $latest_release | jq -r '.assets[0].browser_download_url')
+          asset_name=$(echo $latest_release | jq -r '.assets[0].name')
+          echo "Latest asset URL: $asset_url"
+          echo "Latest asset name: $asset_name"
+          curl -L -o $asset_name $asset_url
+          echo "asset_name=$asset_name" >> $GITHUB_ENV
 
-      # 1. 최신 릴리스에서 JAR 파일 다운로드
-      - name: Get Latest Release
-        id: get_release
-        run: |
-          latest_release=$(curl -s https://api.github.com/repos/reposy/springboot-kotlin/releases/latest)
-          tag_name=$(echo $latest_release | jq -r .tag_name)
-          echo "Latest tag name is $tag_name"
-          echo "tag=$tag_name" >> $GITHUB_ENV  # 새로운 방식으로 환경 변수 설정
-
-      # 2. 최신 릴리스에서 JAR 파일 다운로드
-      - name: Download Latest Release Asset
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ env.tag }}  # 자동으로 가져온 최신 태그
-          files: springboot-kotlin.jar  # 다운로드할 JAR 파일 이름
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_ACTIONS }}  # Personal Access Token 사용
-
-      # 3. JAR 파일을 EC2로 업로드
+      # 2. JAR 파일을 EC2로 업로드
       - name: Upload JAR to EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: springboot-kotlin.jar  # 실제 JAR 파일 이름
+          source: ${{ env.asset_name }}  # 자동으로 가져온 파일 이름
           target: /home/ubuntu/sypg/app.jar  # EC2의 지정된 경로에 저장
 
-      # 4. EC2에서 Docker 컨테이너 실행
+      # 3. EC2에서 Docker 컨테이너 실행
       - name: Run Docker Container on EC2
         uses: appleboy/ssh-action@master
         with:
