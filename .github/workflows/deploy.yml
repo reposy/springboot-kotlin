@@ -1,7 +1,9 @@
 name: Deploy to EC2 from Latest GitHub Release
 
 on:
-  workflow_dispatch:  # 수동 실행을 허용하는 이벤트
+  release:
+    types: [published]  # 릴리스가 게시될 때 트리거
+  workflow_dispatch:    # 수동 실행을 허용하는 이벤트
 
 jobs:
   deploy:
