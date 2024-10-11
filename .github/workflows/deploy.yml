@@ -34,8 +34,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.tag }}  # 자동으로 가져온 최신 태그
-          files: |
-            - springboot-kotlin.jar  # 다운로드할 JAR 파일 이름
+          files: | # 배열 형식으로 파일 이름 지정
+            - springboot-kotlin.jar
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_ACTIONS }}  # Personal Access Token 사용
 
