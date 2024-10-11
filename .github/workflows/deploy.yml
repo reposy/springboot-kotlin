@@ -11,6 +11,13 @@ jobs:
       ACTIONS_STEP_DEBUG: true
 
     steps:
+      # 0. 최신 릴리스에서 파일 목록을 확인
+      - name: List Release Files
+        run: |
+          latest_release=$(curl -s https://api.github.com/repos/reposy/springboot-kotlin/releases/latest)
+          echo "Release assets:"
+          echo $latest_release | jq '.assets[].name'
+
       # 1. 최신 릴리스에서 JAR 파일 다운로드
       - name: Get Latest Release
         id: get_release
