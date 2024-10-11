@@ -1,11 +1,11 @@
-# OpenJDK 21을 포함한 공식 이미지 사용
+# 1. 사용할 베이스 이미지 선택
 FROM openjdk:21-jdk-slim
 
-# 작업 디렉토리 설정
+# 2. 작업 디렉토리 설정
 WORKDIR /app
 
-# EC2의 /home/ubuntu/sypg/app.jar 파일을 컨테이너의 /app 디렉토리에 복사
-COPY /home/ubuntu/sypg/app.jar app.jar
+# 3. 로컬에 있는 JAR 파일을 컨테이너 내부로 복사
+COPY springboot-kotlin.jar /app/app.jar
 
-# 애플리케이션 실행
-CMD ["java", "-jar", "app.jar"]
+# 4. 컨테이너 시작 시 JAR 파일 실행
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
