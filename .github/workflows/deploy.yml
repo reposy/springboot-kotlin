@@ -25,8 +25,8 @@ jobs:
           curl -L -o $asset_name $asset_url
           echo "asset_name=$asset_name" >> $GITHUB_ENV
           echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV  # 리포지토리 이름을 환경 변수에 저장
-          echo "IMAGE_NAME=${{ env.REPO_NAME }}-image" >> $GITHUB_ENV  # 이미지 이름을 환경 변수에 저장
-          echo "CONTAINER_NAME=${{ env.REPO_NAME }}-container" >> $GITHUB_ENV  # 컨테이너 이름을 환경 변수에 저장
+          echo "IMAGE_NAME=${REPO_NAME}-image" >> $GITHUB_ENV  # 이미지 이름을 환경 변수에 저장
+          echo "CONTAINER_NAME=${REPO_NAME}-container" >> $GITHUB_ENV  # 컨테이너 이름을 환경 변수에 저장
 
       # 2. JAR 파일을 EC2로 업로드
       - name: Upload JAR to EC2
