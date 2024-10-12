@@ -5,7 +5,7 @@ FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 # 3. 로컬에 있는 JAR 파일을 컨테이너 내부로 복사
-COPY springboot-kotlin.jar /app/app.jar
+COPY app.jar /app/app.jar
 
 # 4. 컨테이너 시작 시 JAR 파일 실행
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
